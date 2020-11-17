@@ -18,6 +18,9 @@ import android.os.IBinder
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import java.io.File
+import java.io.FileNotFoundException
+import java.util.*
 
 class LocationService: Service(), LocationListener {
 
@@ -27,13 +30,13 @@ class LocationService: Service(), LocationListener {
     private val MinTime = 1000
     private val MinDistance = 50f
 
-    private var fileReadWrite: StorageReadWrite? = null
-
     override fun onCreate() {
         super.onCreate()
-        context = applicationContext
         // 内部ストレージにログを保存
-        fileReadWrite = StorageReadWrite(applicationContext)
+
+        context=applicationContext
+
+        WriteFileTest(applicationContext.toString())
 
         // LocationManager インスタンス生成
         locationManager =
@@ -44,7 +47,7 @@ class LocationService: Service(), LocationListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val requestCode = 0
         val channelId = "default"
-        val title = "!!"//context!!.getString(R.string.app_name)
+        val title = "　"//context!!.getString(R.string.app_name)
         val pendingIntent = PendingIntent.getActivity(
             context, requestCode,
             intent, PendingIntent.FLAG_UPDATE_CURRENT
@@ -73,7 +76,7 @@ class LocationService: Service(), LocationListener {
                 Notification.Builder(context, channelId)
                     .setContentTitle(title) // 本来なら衛星のアイコンですがandroid標準アイコンを設定
                     .setSmallIcon(android.R.drawable.btn_star)
-                    .setContentText("?"/*通知メモ入れる、GPS*/)
+                    //.setContentText("　"/*通知メモ入れる、GPS*/)
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
                     .setWhen(System.currentTimeMillis())
@@ -117,6 +120,7 @@ class LocationService: Service(), LocationListener {
         }
     }
 
+    //GPS情報更新時処理
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onLocationChanged(location: Location) {
         val strBuf = StringBuilder()
@@ -158,7 +162,8 @@ class LocationService: Service(), LocationListener {
             """.trimIndent()
         strBuf.append(str)
         strBuf.append("----------\n")
-        fileReadWrite?.writeFile(strBuf.toString(), true)
+        //fileReadWrite?.writeFile(strBuf.toString(), true)
+        WriteFileTest(strBuf.toString())
     }
 
     //fun onProviderDisabled(provider: String?) {}
@@ -175,7 +180,8 @@ class LocationService: Service(), LocationListener {
                 LocationProvider.OUT_OF_SERVICE -> strBuf.append("LocationProvider.OUT_OF_SERVICE\n")
                 LocationProvider.TEMPORARILY_UNAVAILABLE -> strBuf.append("LocationProvider.TEMPORARILY_UNAVAILABLE\n")
             }
-            fileReadWrite?.writeFile(strBuf.toString(), true)
+            //fileReadWrite?.writeFile(strBuf.toString(), true)
+            WriteFileTest(strBuf.toString())
         }
     }
 
@@ -212,6 +218,23 @@ class LocationService: Service(), LocationListener {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+
+    fun WriteFileTest(str:String){
+        var buf:String=""
+        try{
+            val file= File("$filesDir/", "log.txt")
+            val scan= Scanner(file)
+            while(scan.hasNextLine()){
+                buf+=scan.nextLine()+"\n"
+            }
+            buf+="\n"+str
+            file.writeText(buf)
+        }catch(e: FileNotFoundException){
+            val file= File("$filesDir/", "log.txt")
+            file.writeText("NEW CREATE FILE")
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import java.io.*
 import java.nio.charset.StandardCharsets
 
 internal class StorageReadWrite(context: Context) {
+
     private val file: File
     private var stringBuffer: StringBuffer? = null
     fun clearFile() {
@@ -80,9 +81,11 @@ internal class StorageReadWrite(context: Context) {
             return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
         }
 
+    //開始時処理
     init {
         val path =
             context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         file = File(path, "log.txt")
     }
+
 }
