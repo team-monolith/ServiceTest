@@ -23,13 +23,11 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_MULTI_PERMISSIONS = 101
 
     private var textView: TextView? = null
-    private var fileReadWrite: StorageReadWrite? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val context = applicationContext
-        fileReadWrite = StorageReadWrite(context)
 
         // Android 6, API 23以上でパーミッションの確認
         if (Build.VERSION.SDK_INT >= 23) {

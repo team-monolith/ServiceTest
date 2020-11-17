@@ -27,12 +27,11 @@ class LocationService: Service(), LocationListener {
     private var locationManager: LocationManager? = null
     private var context: Context? = null
 
-    private val MinTime = 1000
-    private val MinDistance = 50f
+    private val MinTime = 1000 //最低更新間隔（ミリ秒）
+    private val MinDistance = 1f//最低更新距離（メートル）
 
     override fun onCreate() {
         super.onCreate()
-        // 内部ストレージにログを保存
 
         context=applicationContext
 
@@ -126,22 +125,22 @@ class LocationService: Service(), LocationListener {
         val strBuf = StringBuilder()
         strBuf.append("----------\n")
         var str = """
-            Latitude = ${location.latitude}
+            緯度(Y) = ${location.latitude}
             
             """.trimIndent()
         strBuf.append(str)
         str = """
-            Longitude = ${location.longitude}
+            経度(X) = ${location.longitude}
             
             """.trimIndent()
         strBuf.append(str)
         str = """
-            Accuracy = ${location.accuracy}
+            誤差 = ${location.accuracy}
             
             """.trimIndent()
         strBuf.append(str)
         str = """
-            Altitude = ${location.altitude}
+            高度 = ${location.altitude}
             
             """.trimIndent()
         strBuf.append(str)
@@ -149,27 +148,23 @@ class LocationService: Service(), LocationListener {
             SimpleDateFormat("MM/dd HH:mm:ss")
         sdf.timeZone = TimeZone.getTimeZone("Asia/Tokyo")
         val currentTime = sdf.format(location.time)
-        str = "Time = $currentTime\n"
+        str = "時間 = $currentTime\n"
         strBuf.append(str)
         str = """
-            Speed = ${location.speed}
+            速度 = ${location.speed}
             
             """.trimIndent()
         strBuf.append(str)
         str = """
-            Bearing = ${location.bearing}
+            方角 = ${location.bearing}
             
             """.trimIndent()
         strBuf.append(str)
         strBuf.append("----------\n")
-        //fileReadWrite?.writeFile(strBuf.toString(), true)
         WriteFileTest(strBuf.toString())
     }
 
-    //fun onProviderDisabled(provider: String?) {}
-
-    //fun onProviderEnabled(provider: String?) {}
-
+    //GPSが利用不可、利用可能になった場合に呼ばれる
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         // Android 6, API 23以上でパーミッシンの確認
         if (Build.VERSION.SDK_INT <= 28) {
@@ -180,7 +175,6 @@ class LocationService: Service(), LocationListener {
                 LocationProvider.OUT_OF_SERVICE -> strBuf.append("LocationProvider.OUT_OF_SERVICE\n")
                 LocationProvider.TEMPORARILY_UNAVAILABLE -> strBuf.append("LocationProvider.TEMPORARILY_UNAVAILABLE\n")
             }
-            //fileReadWrite?.writeFile(strBuf.toString(), true)
             WriteFileTest(strBuf.toString())
         }
     }
