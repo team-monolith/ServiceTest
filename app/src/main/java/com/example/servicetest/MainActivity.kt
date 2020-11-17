@@ -1,11 +1,9 @@
 package com.example.servicetest
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -38,6 +36,12 @@ class MainActivity : AppCompatActivity() {
             checkMultiPermissions()
         } else {
             startLocationService()
+        }
+
+        //追加ボタンリスナークラス
+        val fab:View=findViewById(R.id.fab_delete)
+        fab.setOnClickListener{
+            txtAllDelete()
         }
     }
 
@@ -132,5 +136,10 @@ class MainActivity : AppCompatActivity() {
 
         }
         return buf
+    }
+
+    fun txtAllDelete(){
+            val file= File("$filesDir/", "log.txt")
+            file.writeText("")
     }
 }
